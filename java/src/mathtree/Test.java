@@ -11,6 +11,8 @@ public class Test {
 
 	private abstract class Element {
 
+		public Object operator;
+
 		public Boolean isNumber() {
 			return true;
 		}
@@ -20,6 +22,16 @@ public class Test {
 		}
 
 		public Operator getOpValue() {
+			return null;
+		}
+
+		public Element getOp1() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Element getOp2() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 	}
@@ -66,7 +78,7 @@ public class Test {
 		public Expression() {
 			operator = null;
 		}
-
+		
 		public Expression(Operator op) {
 			operator = op;
 		}
@@ -88,36 +100,55 @@ public class Test {
 		public void setOp2(Term op) {
 			this.op2 = (Element)op;
 		}
-	}
+		
+		public Element getOp1() {
+			return this.op1;
+		}
+		public Element getOp2() {
+			return this.op2;
+		}
+		
+		private Operator getOperator() {
+			return (Operator)operator;
+		}
 
+		public Integer calculate() {
+			if(getOperator() == Operator.ADD) {
+				
+			}
+		}
+	}
+	
+	private static Stack<Element> terms;
+	private static Expression expr;
+	
 
 	public static void main(String args[]) {
 		Test test = new Test();
-		Expression expr = test.new Expression();
-		Stack<Element> terms = new Stack<Element>();
-		test.make_terms(args, terms, 0);
-		Collections.reverse(terms);
-		test.make_expr(terms, expr);
+		terms = new Stack<Element>();
+		test.make_terms(args, 0);
+		expr = (Expression)test.make_expr();
+		Integer result = expr.calculate();
 		System.out.println("terms " + terms.toString());
 		System.out.println("expression " + expr.toString());
 	}
 
-	private void make_expr(Stack<Element> terms, Expression expr) {
-		System.out.println("in make_expr");
+
+	private Element make_expr() {
+		System.out.println("in make_expr with " + terms.toString());
 		System.out.println("first term " + terms.peek().toString() + " is a number = " + terms.peek().isNumber());
-//		if(terms.peek().isNumber() && terms.peek().isNumber() && !terms.peek().isNumber()) {
-//			expr.setOp1(new Term(terms.pop().getNumValue()));
-//			expr.setOp2(new Term(terms.pop().getNumValue()));
-//			expr.setOperator(terms.pop().getOpValue());
-//			terms.push(expr);
-//
-//			if(terms.size() != 0) {
-//				make_expr(terms, expr);
-//			}
-//		}
+		if(terms.peek().isNumber()) {
+			return(terms.pop());
+		}
+		else {
+			Expression expr = new Expression(terms.pop());
+			expr.op2 = make_expr();
+			expr.op1 = make_expr();
+			return expr;
+		}
 	}
 
-	private void make_terms(String input[], Stack<Element> terms, int index) {
+	private void make_terms(String input[], int index) {
 		while(index < input.length) {
 			if(input[index].equals("+")) {
 				terms.push(new Term(Operator.ADD));
