@@ -13,22 +13,12 @@ public class Test {
 	private class Term {
 		private Object value;
 
-		Term() { }
-
-		Term(Number number) {
+		  Term(Number number) {
 			value = number;
 		}
 
 		Term(Operator op) {
 			value = op;
-		}
-
-		Term(Expression expr) {
-			value = expr;
-		}
-
-		public Term(Term term) {
-			value = term;
 		}
 
 		public String toString() {
@@ -54,14 +44,6 @@ public class Test {
 			}
 			return result;
 		}
-
-		public Expression getExprValue() {
-			return (Expression)value;
-		}
-
-		public Term getValue() {
-			return (Term)value;
-		}
 	}
 
 	public abstract class Expression {
@@ -79,17 +61,9 @@ public class Test {
 		private Operator operator;
 		private Number op;
 
-		public SimpleExpression() {
-			operator = null;
-		}
-
 		public SimpleExpression(Number n) {
 			operator = Operator.NUMBER;
 			op = n;
-		}
-
-		public Boolean isNumber() {
-			return true;
 		}
 
 		public Integer getValue() {
@@ -106,16 +80,8 @@ public class Test {
 		private Expression op1;
 		private Expression op2;
 
-		public ComplexExpression() {
-			operator = null;
-		}
-
 		public ComplexExpression(Operator op) {
 			operator = op;
-		}
-
-		public ComplexExpression(Expression makeExpr) {
-			// TODO Auto-generated constructor stub
 		}
 
 		public Operator getOperator() {
@@ -129,13 +95,6 @@ public class Test {
 			return op2;
 		}
 		
-		public void setOp1(ComplexExpression expr) {
-			op1 = expr;
-		}
-		public void setOp2(ComplexExpression expr) {
-			op2 = expr;
-		}
-
 		public void setOp2(Expression expr) {
 			op2 = expr;
 		}
@@ -161,8 +120,6 @@ public class Test {
 		expr = test.make_expr();
 		Integer result = test.calculate(expr);
 		System.out.println("result = " + result.toString());
-		System.out.println("terms " + terms.toString());
-		System.out.println("expression " + expr.toString() + " = " + result.toString());
 	}
 
 
@@ -199,8 +156,6 @@ public class Test {
 	
 	private Expression make_expr() {
 		Expression result = null;
-		System.out.println("in make_expr with " + terms.toString());
-		System.out.println("first term " + terms.peek().toString() + " is a number = " + terms.peek().isNumber().toString());
 		Term top = terms.pop();
 		if(top.isOperator()) {
 			ComplexExpression expr = new ComplexExpression(top.getOpValue());

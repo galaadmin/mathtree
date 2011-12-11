@@ -1,20 +1,19 @@
--module(mathtree).
+#!/usr/local/bin/escript
 
--export([run/1, parse/1]).
+%% -mode(compile).
 
-parse(Expression) ->
-    %% get a list of white space sperated tokens
-    Tokens = string:tokens(Expression, " "),
-    Expressions = make_terms(Tokens, []),
-    io:fwrite("~w~n", [Expressions]),
-    run(Expressions).
+main(Tokens) ->
+    Expressions = make_expr(make_terms(Tokens, []), []),
+    %% io:fwrite("~w~n", [Expressions]),
+    io:fwrite("result = ~B~n", [run(Expressions)]),
+    init:stop().
 
 %%
 %% make_terms/2
 %% build a list of terms from the list of tokens
 %% finally turn those terms into expressions
 %%
-make_terms([], Out) -> make_expr(lists:reverse(Out), []);
+make_terms([], Out) -> lists:reverse(Out);
 make_terms(["+"|T], Out) -> make_terms(T, [add|Out]);
 make_terms(["-"|T], Out) -> make_terms(T, [subtract|Out]);
 make_terms(["*"|T], Out) -> make_terms(T, [multiple|Out]);
