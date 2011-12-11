@@ -1,11 +1,9 @@
 #!/usr/local/bin/escript
 
-%% -mode(compile).
-
 main(Tokens) ->
     Expressions = make_expr(make_terms(Tokens, []), []),
     %% io:fwrite("~w~n", [Expressions]),
-    io:fwrite("result = ~B~n", [run(Expressions)]),
+    io:fwrite("result = ~w~n", [calculate(Expressions)]),
     init:stop().
 
 %%
@@ -39,14 +37,14 @@ make_expr([Term|Terms], [N1, N2|Numbers]) -> %% it is an atom
 %%
 %% calculate the expression
 %%
-run(N) when is_number(N) ->
+calculate(N) when is_number(N) ->
     N;
-run({add, Op1, Op2}) ->
-    run(Op1) + run(Op2);
-run({subtract, Op1, Op2}) ->
-    run(Op1) - run(Op2);
-run({multiple, Op1, Op2}) ->
-    run(Op1) * run(Op2);
-run({divide, Op1, Op2}) ->
-    run(Op1) / run(Op2).
+calculate({add, Op1, Op2}) ->
+    calculate(Op1) + calculate(Op2);
+calculate({subtract, Op1, Op2}) ->
+    calculate(Op1) - calculate(Op2);
+calculate({multiple, Op1, Op2}) ->
+    calculate(Op1) * calculate(Op2);
+calculate({divide, Op1, Op2}) ->
+    calculate(Op1) div calculate(Op2).
 
