@@ -6,37 +6,11 @@ import java.util.*;
 public class Test {
 
 	public enum Operator {
-		ADD, SUBTRACT, MULTIPLE, DIVIDE
+		ADD, SUBTRACT, MULTIPLE, DIVIDE, NUMBER
 	}
 
-	private abstract class Element {
 
-		public Object operator;
-
-		public Boolean isNumber() {
-			return true;
-		}
-
-		public Number getNumValue() {
-			return null;
-		}
-
-		public Operator getOpValue() {
-			return null;
-		}
-
-		public Element getOp1() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public Element getOp2() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-
-	private class Term extends Element {
+	private class Term {
 		private Object value;
 
 		Term() { }
@@ -49,6 +23,14 @@ public class Test {
 			value = op;
 		}
 
+		Term(Expression expr) {
+			value = expr;
+		}
+
+		public Term(Term term) {
+			value = term;
+		}
+
 		public String toString() {
 			return value.toString();
 		}
@@ -56,13 +38,25 @@ public class Test {
 		public Boolean isNumber() {
 			return value instanceof Number;
 		}
+		
+		public Boolean isOperator() {
+			return value instanceof Operator;
+		}
 
 		public Operator getOpValue() {
 			return (Operator)value;
 		}
 
-		public Number getNumValue() {
-			return (Number)value;
+		public Integer getNumValue() {
+			Integer result = 0;
+			if(value instanceof Integer) {
+				result = (Integer) value;
+			}
+			return result;
+		}
+
+		public Expression getExprValue() {
+			return (Expression)value;
 		}
 
 		public Term getValue() {
@@ -70,82 +64,154 @@ public class Test {
 		}
 	}
 
-	private class Expression extends Element {
-		private Operator operator;
-		private Element op1;
-		private Element op2;
+	public abstract class Expression {
+		
+		public Expression() { }
 
-		public Expression() {
+		public Expression(Operator op) { }
+
+		public abstract Operator getOperator();
+
+		public abstract Integer getValue();
+	}
+	
+	private class SimpleExpression extends Expression {
+		private Operator operator;
+		private Number op;
+
+		public SimpleExpression() {
 			operator = null;
 		}
+
+		public SimpleExpression(Number n) {
+			operator = Operator.NUMBER;
+			op = n;
+		}
+
+		public Boolean isNumber() {
+			return true;
+		}
+
+		public Integer getValue() {
+			return (Integer) op;
+		}
 		
-		public Expression(Operator op) {
+		public Operator getOperator() {
+			return operator;
+		}
+	}
+
+	private class ComplexExpression extends Expression {
+		private Operator operator;
+		private Expression op1;
+		private Expression op2;
+
+		public ComplexExpression() {
+			operator = null;
+		}
+
+		public ComplexExpression(Operator op) {
 			operator = op;
 		}
 
-		public void setOperator(Operator op) {
-			this.operator = op;
+		public ComplexExpression(Expression makeExpr) {
+			// TODO Auto-generated constructor stub
 		}
 
-		public void setOp1(Expression op) {
-			this.op1 = op;
-		}
-		public void setOp1(Term op) {
-			this.op1 = (Element)op;
+		public Operator getOperator() {
+			return operator;
 		}
 
-		public void setOp2(Expression op) {
-			this.op2 = op;
+		public Expression getOp1() {
+			return op1;
 		}
-		public void setOp2(Term op) {
-			this.op2 = (Element)op;
+		public Expression getOp2() {
+			return op2;
 		}
 		
-		public Element getOp1() {
-			return this.op1;
+		public void setOp1(ComplexExpression expr) {
+			op1 = expr;
 		}
-		public Element getOp2() {
-			return this.op2;
-		}
-		
-		private Operator getOperator() {
-			return (Operator)operator;
+		public void setOp2(ComplexExpression expr) {
+			op2 = expr;
 		}
 
-		public Integer calculate() {
-			if(getOperator() == Operator.ADD) {
-				
-			}
+		public void setOp2(Expression expr) {
+			op2 = expr;
+		}
+
+		public void setOp1(Expression expr) {
+			op1 = expr;
+		}
+		
+		public Integer getValue() {
+			return null;
 		}
 	}
-	
-	private static Stack<Element> terms;
+ 
+
+	private static Stack<Term> terms;
 	private static Expression expr;
-	
+
 
 	public static void main(String args[]) {
 		Test test = new Test();
-		terms = new Stack<Element>();
+		terms = new Stack<Term>();
 		test.make_terms(args, 0);
-		expr = (Expression)test.make_expr();
-		Integer result = expr.calculate();
+		expr = test.make_expr();
+		Integer result = test.calculate(expr);
+		System.out.println("result = " + result.toString());
 		System.out.println("terms " + terms.toString());
-		System.out.println("expression " + expr.toString());
+		System.out.println("expression " + expr.toString() + " = " + result.toString());
 	}
 
 
-	private Element make_expr() {
+	public Integer calculate(Expression expr) {
+		Integer result = 0;
+		Integer n1, n2;
+		if(expr.getOperator() == Operator.NUMBER) {
+			result = expr.getValue();
+		}
+		else if(expr.getOperator() == Operator.ADD) {
+			n2 = calculate(((ComplexExpression) expr).getOp2());
+			n1 = calculate(((ComplexExpression) expr).getOp1());
+			result = n1 + n2;
+		}
+		else if(expr.getOperator() == Operator.SUBTRACT) {
+			n2 = calculate(((ComplexExpression) expr).getOp2());
+			n1 = calculate(((ComplexExpression) expr).getOp1());
+			result = n1 - n2;
+		}
+		else if(expr.getOperator() == Operator.MULTIPLE) {
+			n2 = calculate(((ComplexExpression) expr).getOp2());
+			n1 = calculate(((ComplexExpression) expr).getOp1());
+			result = n1 * n2;
+		}
+		else if(expr.getOperator() == Operator.DIVIDE) {
+			n2 = calculate(((ComplexExpression) expr).getOp2());
+			n1 = calculate(((ComplexExpression) expr).getOp1());
+			result = n1 / n2;
+		}
+
+		return result;
+	}
+	
+	
+	private Expression make_expr() {
+		Expression result = null;
 		System.out.println("in make_expr with " + terms.toString());
-		System.out.println("first term " + terms.peek().toString() + " is a number = " + terms.peek().isNumber());
-		if(terms.peek().isNumber()) {
-			return(terms.pop());
+		System.out.println("first term " + terms.peek().toString() + " is a number = " + terms.peek().isNumber().toString());
+		Term top = terms.pop();
+		if(top.isOperator()) {
+			ComplexExpression expr = new ComplexExpression(top.getOpValue());
+			expr.setOp2(make_expr());
+			expr.setOp1(make_expr());
+			result = expr;
 		}
-		else {
-			Expression expr = new Expression(terms.pop());
-			expr.op2 = make_expr();
-			expr.op1 = make_expr();
-			return expr;
+		else if(top.isNumber()) {
+			result = new SimpleExpression(top.getNumValue());
 		}
+		return result;
 	}
 
 	private void make_terms(String input[], int index) {
@@ -157,7 +223,7 @@ public class Test {
 				terms.push(new Term(Operator.SUBTRACT));
 			}
 			else if(input[index].equals("*")) {
-				terms.push(new Term(Operator.DIVIDE));
+				terms.push(new Term(Operator.MULTIPLE));
 			}
 			else if(input[index].equals("/")) {
 				terms.push(new Term(Operator.DIVIDE));
