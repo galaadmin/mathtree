@@ -13,7 +13,7 @@ public class Mathtree {
 	private class Term {
 		private Object value;
 
-		  Term(Number number) {
+		Term(Number number) {
 			value = number;
 		}
 
@@ -28,7 +28,7 @@ public class Mathtree {
 		public Boolean isNumber() {
 			return value instanceof Number;
 		}
-		
+
 		public Boolean isOperator() {
 			return value instanceof Operator;
 		}
@@ -47,7 +47,7 @@ public class Mathtree {
 	}
 
 	public abstract class Expression {
-		
+
 		public Expression() { }
 
 		public Expression(Operator op) { }
@@ -56,7 +56,7 @@ public class Mathtree {
 
 		public abstract Integer getValue();
 	}
-	
+
 	private class SimpleExpression extends Expression {
 		private Operator operator;
 		private Number op;
@@ -69,7 +69,7 @@ public class Mathtree {
 		public Integer getValue() {
 			return (Integer) op;
 		}
-		
+
 		public Operator getOperator() {
 			return operator;
 		}
@@ -94,7 +94,7 @@ public class Mathtree {
 		public Expression getOp2() {
 			return op2;
 		}
-		
+
 		public void setOp2(Expression expr) {
 			op2 = expr;
 		}
@@ -102,12 +102,12 @@ public class Mathtree {
 		public void setOp1(Expression expr) {
 			op1 = expr;
 		}
-		
+
 		public Integer getValue() {
 			return null;
 		}
 	}
- 
+
 
 	private static Stack<Term> terms;
 	private static Expression expr;
@@ -152,8 +152,8 @@ public class Mathtree {
 
 		return result;
 	}
-	
-	
+
+
 	private Expression make_expr() {
 		Expression result = null;
 		Term top = terms.pop();
