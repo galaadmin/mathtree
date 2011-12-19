@@ -112,13 +112,14 @@ public class Mathtree {
 	private static Stack<Term> terms;
 	private static Expression expr;
 
-
 	public static void main(String args[]) {
+		long start = System.nanoTime();
 		Mathtree test = new Mathtree();
 		terms = new Stack<Term>();
 		test.make_terms(args, 0);
 		expr = test.make_expr();
-		System.out.println("result = " + test.calculate(expr).toString());
+		long end = System.nanoTime();
+		System.out.println("time = " + (end - start)/1000 + " result = " + test.calculate(expr).toString());
 	}
 
 

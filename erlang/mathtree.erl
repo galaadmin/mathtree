@@ -1,19 +1,19 @@
 -module(mathtree).
 
--export([parse/1, run2/1]).
+-export([parse/1]).
 
 parse([String]) ->
     run(string:tokens(String, " ")).
 
 run(Tokens) ->
-    {Time, Result} = timer:tc(mathtree, run2, [Tokens]),
-    io:fwrite("time = ~w result = ~w~n", [Time, Result]),
-    init:stop().
-
-run2(Tokens) ->
+    {_, _, Start} = now(),
     Expressions = make_expr(make_terms(Tokens, []), []),
     %% io:fwrite("~w~n", [Expressions]),
-    calculate(Expressions).
+    Result = calculate(Expressions),
+    {_, _, End} = now(),
+    Time = End - Start,
+    io:fwrite("time = ~w result = ~w~n", [Time, Result]),
+    init:stop().
 
 %%
 %% make_terms/2
