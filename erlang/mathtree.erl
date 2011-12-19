@@ -1,10 +1,19 @@
-#!/usr/local/bin/escript
+-module(mathtree).
 
-main(Tokens) ->
+-export([parse/1, run2/1]).
+
+parse([String]) ->
+    run(string:tokens(String, " ")).
+
+run(Tokens) ->
+    {Time, Result} = timer:tc(mathtree, run2, [Tokens]),
+    io:fwrite("time = ~w result = ~w~n", [Time, Result]),
+    init:stop().
+
+run2(Tokens) ->
     Expressions = make_expr(make_terms(Tokens, []), []),
     %% io:fwrite("~w~n", [Expressions]),
-    io:fwrite("result = ~w~n", [calculate(Expressions)]),
-    init:stop().
+    calculate(Expressions).
 
 %%
 %% make_terms/2
