@@ -8,7 +8,7 @@ parse([String]) ->
 run(Tokens) ->
     {_, _, Start} = now(),
     Expressions = make_expr(make_terms(Tokens, []), []),
-    io:fwrite("~p~n", [Expressions]),
+    %% io:fwrite("~p~n", [Expressions]),
     Result = calculate(Expressions),
     {_, _, End} = now(),
     Time = End - Start,
@@ -25,8 +25,17 @@ make_terms(["+"|T], Out) -> make_terms(T, [add|Out]);
 make_terms(["-"|T], Out) -> make_terms(T, [subtract|Out]);
 make_terms(["*"|T], Out) -> make_terms(T, [multiply|Out]);
 make_terms(["/"|T], Out) -> make_terms(T, [divide|Out]);
-make_terms([Number|T], Out) -> make_terms(T, [list_to_integer(Number)|Out]).
+make_terms([Number|T], Out) -> make_terms(T, [to_number(Number)|Out]).
 
+
+%%
+%% parse number
+%%
+to_number(String) ->
+    case string:chr(String, $.) of
+    	0 -> list_to_integer(String);
+    	_ -> list_to_float(String)
+    end.
 
 %%
 %% make_expr/2
