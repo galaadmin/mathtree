@@ -1,18 +1,34 @@
-data = ['subtract',['multiply',['add',['add',['multiply',['subtract',['add',7,3],-15],['subtract',127,55]],31],['multiply',82,97]],91],12]
-# data = { operator => 'subtract', op1 => 33, op2 => 15 }
+OPERATOR = "operator"
+OP1 = "op1"
+OP2 = "op2"
+
+ADD = "add"
+SUBTRACT = "subtract"
+MULTIPLY = "multiply"
+DIVIDE = "divide"
 
 def calculate(data)
-    # puts "data: " + data.join(" ")
+    print "data: "
+    if data.is_a?(Numeric)
+	puts "Numberic " + data.to_s
+    else
+	puts
+	data.each{|key, value| puts "   Hash " + key.to_s + " => " + value.to_s }
+    end
     if data.is_a?(Numeric)
 	data
-    elsif data[0] == 'add'
-    	calculate(data[1]) + calculate(data[2])
-    elsif data[0] == 'subtract'
-    	calculate(data[1]) - calculate(data[2])
-    elsif data[0] == 'multiply'
-    	calculate(data[1]) * calculate(data[2])
-    elsif data[0] == 'divide'
-    	calculate(data[1]) / calculate(data[2])
+    elsif data.is_a?(Hash)
+	if data[OPERATOR] == ADD
+	    calculate(data[OP1]) + calculate(data[OP2])
+	elsif data[OPERATOR] == SUBTRACT
+	    calculate(data[OP1]) - calculate(data[OP2])
+	elsif data[OPERATOR] == MULTIPLY
+	    calculate(data[OP1]) * calculate(data[OP2])
+	elsif data[OPERATOR] == DIVIDE
+	    calculate(data[OP1]) / calculate(data[OP2])
+	end
+    else
+	puts "how did I get here" + data.class.name
     end
 end
 
@@ -25,13 +41,13 @@ def make_terms(input, output)
 	if element.match(/[0-9]+/)
 	    output << element.to_i
 	elsif element == "+"
-	    output << 'add'
+	    output << ADD
 	elsif element == "-"
-	    output << 'subtract'
+	    output << SUBTRACT
 	elsif element == "*"
-	    output << 'multiply'
+	    output << MULTIPLY
 	elsif element == "/"
-	    output << 'divide'
+	    output << DIVIDE
 	end
 	make_terms(input, output)
     end
@@ -43,9 +59,7 @@ def make_expr(terms, expressions)
 	if top.is_a?(Numeric)
 	    expressions << top
 	else
-	    op2 = expressions.pop()
-	    op1 = expressions.pop()
-	    expressions << [top, op1, op2]
+	    expressions << { OPERATOR => top, OP2 => expressions.pop(), OP1 => expressions.pop() }
 	end
 	make_expr(terms, expressions)
     else
@@ -53,7 +67,10 @@ def make_expr(terms, expressions)
     end
 end
 
-# data = make_expr(make_terms(ARGV, Array.new()), Array.new())
+start_time = Time.now.usec
+data = make_expr(make_terms(ARGV, Array.new()), Array.new())
 # puts "Expressions: " + data.join(" ")
-puts calculate(data)
+result = calculate(data[0])
+end_time = Time.now.usec
+puts "Time = " + (end_time - start_time).to_s + " Result = " + result.to_s
 
