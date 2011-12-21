@@ -1,9 +1,14 @@
 #!/usr/local/bin/escript
 
+-mode(compile).
+
 main(Tokens) ->
+    {_, _, Start} = now(),
     Expressions = make_expr(make_terms(Tokens, []), []),
     %% io:fwrite("~w~n", [Expressions]),
-    io:fwrite("result = ~w~n", [calculate(Expressions)]),
+    Result = calculate(Expressions),
+    {_, _, End} = now(),
+    io:fwrite("time = ~w result = ~w~n", [End - Start, Result]),
     init:stop().
 
 %%
@@ -14,7 +19,7 @@ main(Tokens) ->
 make_terms([], Out) -> lists:reverse(Out);
 make_terms(["+"|T], Out) -> make_terms(T, [add|Out]);
 make_terms(["-"|T], Out) -> make_terms(T, [subtract|Out]);
-make_terms(["*"|T], Out) -> make_terms(T, [multiple|Out]);
+make_terms(["*"|T], Out) -> make_terms(T, [multiply|Out]);
 make_terms(["/"|T], Out) -> make_terms(T, [divide|Out]);
 make_terms([Number|T], Out) -> make_terms(T, [list_to_integer(Number)|Out]).
 
@@ -43,7 +48,7 @@ calculate({add, Op1, Op2}) ->
     calculate(Op1) + calculate(Op2);
 calculate({subtract, Op1, Op2}) ->
     calculate(Op1) - calculate(Op2);
-calculate({multiple, Op1, Op2}) ->
+calculate({multiply, Op1, Op2}) ->
     calculate(Op1) * calculate(Op2);
 calculate({divide, Op1, Op2}) ->
     calculate(Op1) div calculate(Op2).
