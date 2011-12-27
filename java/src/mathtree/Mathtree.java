@@ -118,8 +118,9 @@ public class Mathtree {
 		terms = new Stack<Term>();
 		test.make_terms(args, 0);
 		expr = test.make_expr();
+		Integer result = test.calculate(expr);
 		long end = System.nanoTime();
-		System.out.println("time = " + (end - start)/1000 + " result = " + test.calculate(expr).toString());
+		System.out.println("\ttime = " + (end - start)/1000 + "\tresult = " + result.toString());
 	}
 
 
@@ -171,13 +172,14 @@ public class Mathtree {
 
 	private void make_terms(String input[], int index) {
 		while(index < input.length) {
+			// System.out.println("current term [" + index + "] is " + input[index]);
 			if(input[index].equals("+")) {
 				terms.push(new Term(Operator.ADD));
 			}
 			else if(input[index].equals("-")) {
 				terms.push(new Term(Operator.SUBTRACT));
 			}
-			else if(input[index].equals("*")) {
+			else if(input[index].equals("x")) {
 				terms.push(new Term(Operator.MULTIPLE));
 			}
 			else if(input[index].equals("/")) {

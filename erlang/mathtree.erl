@@ -23,7 +23,7 @@ run(Tokens) ->
 make_terms([], Out) -> lists:reverse(Out);
 make_terms(["+"|T], Out) -> make_terms(T, [add|Out]);
 make_terms(["-"|T], Out) -> make_terms(T, [subtract|Out]);
-make_terms(["*"|T], Out) -> make_terms(T, [multiply|Out]);
+make_terms(["x"|T], Out) -> make_terms(T, [multiply|Out]);
 make_terms(["/"|T], Out) -> make_terms(T, [divide|Out]);
 make_terms([Number|T], Out) -> make_terms(T, [to_number(Number)|Out]).
 
