@@ -113,14 +113,16 @@ public class Mathtree {
 	private static Expression expr;
 
 	public static void main(String args[]) {
-		long start = System.nanoTime();
-		Mathtree test = new Mathtree();
-		terms = new Stack<Term>();
-		test.make_terms(args, 0);
-		expr = test.make_expr();
-		Integer result = test.calculate(expr);
-		long end = System.nanoTime();
-		System.out.println("\ttime = " + (end - start)/1000 + "\tresult = " + result.toString());
+		for(int i=0; i<999; i++) {
+			long start = System.nanoTime();
+			Mathtree test = new Mathtree();
+			terms = new Stack<Term>();
+			test.make_terms(args, 0);
+			expr = test.make_expr();
+			Integer result = test.calculate(expr);
+			long end = System.nanoTime();
+			System.out.println("Java\ttime = " + (end - start)/1000 + "\tresult = " + result.toString());
+		}
 	}
 
 
@@ -159,10 +161,10 @@ public class Mathtree {
 		Expression result = null;
 		Term top = terms.pop();
 		if(top.isOperator()) {
-			ComplexExpression expr = new ComplexExpression(top.getOpValue());
-			expr.setOp2(make_expr());
-			expr.setOp1(make_expr());
-			result = expr;
+			ComplexExpression newexpr = new ComplexExpression(top.getOpValue());
+			newexpr.setOp2(make_expr());
+			newexpr.setOp1(make_expr());
+			result = newexpr;
 		}
 		else if(top.isNumber()) {
 			result = new SimpleExpression(top.getNumValue());

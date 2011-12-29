@@ -30,25 +30,14 @@ object Main {
   }
   
   def main(args: Array[String]): Unit = {
-    println("Hello, world!")
-    println("  " + args.getClass.toString() + " end");
-    args.foreach { arg =>
-      println("abc: " + arg);
+    for(i <- 0 to 999) {
+      val start_time = System.nanoTime();
+      val terms = make_terms(args, List());
+      val expr = make_expr(terms, List());
+      val result = calculate(expr)
+      val end_time = System.nanoTime();
+      println("Scala\ttime = " + (end_time - start_time)/1000 + "\tresult = " + result);
     }
-
-    val start_time = System.nanoTime();
-//		Mathtree test = new Mathtree();
-//		terms = new Stack<Term>();
-//		test.make_terms(args, 0);
-    val terms = make_terms(args, List());
-    println("terms: " + terms.toString());
-    val expr = make_expr(terms, List());
-    println("expr: " + expr.toString());
-//		expr = test.make_expr();
-//		Integer result = test.calculate(expr);
-    val result = calculate(expr)
-    val end_time = System.nanoTime();
-    println("\ttime = " + (end_time - start_time)/1000 + "\tresult = " + result);
   }
 
   def make_terms(args: Array[String], terms: List[Term]): List[Term] = {
@@ -72,7 +61,6 @@ object Main {
     val top =terms.head
     top match {
       case x: Operator =>
-        println("Operator")
         if(terms.tail.isEmpty) {
           new ComplexExpr(x, stack(1), stack(0))
         }
@@ -80,7 +68,6 @@ object Main {
           make_expr(terms.tail, new ComplexExpr(x, stack(1), stack(0)) :: stack.drop(2))
         }
       case x: Number =>
-        println("Number")
         make_expr(terms.tail, new SimpleExpr(x.asInstanceOf[Number].value) :: stack)
     }
   }
@@ -94,13 +81,13 @@ object Main {
       val thisop: Op = thisexpr.op.value
       thisop match {
         case Add =>
-           calculate(thisexpr.op1) + calculate(thisexpr.op2)
+          calculate(thisexpr.op1) + calculate(thisexpr.op2)
         case Subtract =>
-           calculate(thisexpr.op1) - calculate(thisexpr.op2)
+          calculate(thisexpr.op1) - calculate(thisexpr.op2)
         case Multiply =>
           calculate(thisexpr.op1) * calculate(thisexpr.op2)
         case Divide =>
-           calculate(thisexpr.op1) / calculate(thisexpr.op2)
+          calculate(thisexpr.op1) / calculate(thisexpr.op2)
       }
     }
   }

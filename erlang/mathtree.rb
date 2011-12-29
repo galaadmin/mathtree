@@ -46,24 +46,29 @@ def make_terms(input, output)
   end
 end
 
-def make_expr(terms, expressions)
+def make_expr(terms, expression)
   top = terms.shift
   if top
     if top.is_a?(Numeric)
-	    expressions << top
+      # puts "number: " + top.to_s + " " + expression.to_s
+	    expression << top
     else
-	    expressions << { OPERATOR => top, OP2 => expressions.pop(), OP1 => expressions.pop() }
+      # puts "term: " + top + " " + expression.to_s
+	    expression << { OPERATOR => top, OP2 => expression.pop(), OP1 => expression.pop() }
     end
-    make_expr(terms, expressions)
+    make_expr(terms, expression)
   else
-    expressions
+    # showtree(expression)
+    expression.last
   end
 end
 
-start_time = Time.now.usec
-data = make_expr(make_terms(ARGV, Array.new()), Array.new())
-# puts "Expressions: " + data.join(" ")
-result = calculate(data[0])
-end_time = Time.now.usec
-puts "\ttime = " + (end_time - start_time).to_s + "\tresult = " + result.to_s
-
+0.upto(999) {
+  instring = Array.new(ARGV)
+  start_time = Time.now.usec
+  data = make_expr(make_terms(instring, Array.new()), Array.new())
+  # puts "Expressions: " + data.join(" ")
+  result = calculate(data)
+  end_time = Time.now.usec
+  puts "Ruby\ttime = " + (end_time - start_time).to_s + "\tresult = " + result.to_s
+}

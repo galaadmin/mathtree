@@ -3,12 +3,14 @@
 -mode(compile).
 
 main(Tokens) ->
-    {_, _, Start} = now(),
-    Expressions = make_expr(make_terms(Tokens, []), []),
-    %% io:fwrite("~w~n", [Expressions]),
-    Result = calculate(Expressions),
-    {_, _, End} = now(),
-    io:fwrite("\ttime = ~w\tresult = ~w~n", [End - Start, Result]),
+    lists:foreach(fun(_X) ->
+        {_, _, Start} = now(),
+        Expressions = make_expr(make_terms(Tokens, []), []),
+        %% io:fwrite("~w~n", [Expressions]),
+        Result = calculate(Expressions),
+        {_, _, End} = now(),
+        io:fwrite("Erlang\ttime = ~w\tresult = ~w~n", [End - Start, Result])
+    end, lists:seq(0, 999)),
     init:stop().
 
 %%
@@ -31,10 +33,10 @@ make_terms([Number|T], Out) -> make_terms(T, [list_to_integer(Number)|Out]).
 %% {operator, operand-1, operand-2}
 %%
 make_expr([Term|Terms], Numbers) when is_number(Term) ->
-    io:fwrite("number: ~w  ~p~n", [Term, Numbers]),
+    %% io:fwrite("number: ~w  ~p~n", [Term, Numbers]),
     make_expr(Terms, [Term|Numbers]);
 make_expr([Term|Terms], [N1, N2|Numbers]) -> %% it is an atom
-    io:fwrite("term: ~w  ~p~n", [Term, [N1, N2|Numbers]]),
+    %% io:fwrite("term: ~w  ~p~n", [Term, [N1, N2|Numbers]]),
     case Terms of
 	[] -> {Term, N2, N1};
 	_ ->
